@@ -17,6 +17,7 @@ var COLUMNS = 7;
 var SCOREMULTIPLIER = 10;
 var bricks;
 var closeBrick = 0;
+var currentLevel = 0;
 
 //Paddle
 var paddle = new Object();
@@ -35,6 +36,8 @@ function init()
 	paddle.speed = 5;
 	paddle.resize= 1.0;
 	$('#lives').html(lives);
+	$('#level').html(currentLevel+1);
+	setlevelcolors();
 	initBricks();
 	return setInterval(draw, 10);
 }
@@ -46,8 +49,6 @@ function circle(x, y, r)
 	ctx.closePath();
 	ctx.fill();
 }
-
-
 
 function rect(x, y, w, h, r, g, b)
 {
@@ -116,6 +117,25 @@ function brick (x,y, score,r,g,b){
 	this.b = b;
 }
 
+function level (r, g, b){
+	this.r = r;
+	this.g = g;
+	this.b = b;
+}
+
+function setlevelcolors(){
+	levels = new Array();
+	for(var i = 0; i < 10; i++)
+	{
+		levels[i] = new level(i, randomColor(), randomColor(), randomColor());
+	}
+}
+
+function setLevel(){
+	levels[0];
+
+}
+
 function drawBricks()
 {
 	ctx.save();
@@ -126,11 +146,12 @@ function drawBricks()
 	ctx.restore();
 }
 
+
 function initBricks()
 {
-	var r = randomColor();
-	var g = randomColor();
-	var b = randomColor();
+	var r = levels[currentLevel].r;
+	var g = levels[currentLevel].g;
+	var b = levels[currentLevel].b;
 	bricks = new Array();
 	score = SCOREMULTIPLIER*ROWS;
 
@@ -141,7 +162,7 @@ function initBricks()
 		b -= 30;
 		for(i = 0; i < COLUMNS; i++)
 		{
-			bricks.push(new brick(i*70,j*25, score,r,g,b));
+			bricks.push(new brick((i*70)+10,(j*25)+10, score,r,g,b));
 		}
 		score -= SCOREMULTIPLIER;
 	}
@@ -159,6 +180,7 @@ function removeBrick()
 			addScore(bricks[i].score);
 			bricks.splice(i, 1);
 			dy *= -1;
+			if()
 			return;
 		}
 	}
