@@ -10,14 +10,68 @@ var ctx;
 var gameover = false;
 var interval;
 var timerOffset = 10;
-var BLOCKWIDTH = 60;
+var BLOCKWIDTH = 65;
+var GUTTER = 5;
 var BLOCKHEIGHT = 20;
 var ROWS = 4;
 var COLUMNS = 7;
 var SCOREMULTIPLIER = 10;
+var MAXLEVEL = 10;
 var bricks;
 var closeBrick = 0;
 var currentLevel = 0;
+var levelColors = [
+	{
+		r: 193,
+		g: 82, 
+		b: 218,
+	},
+	{
+		r: 117,
+		g: 185, 
+		b: 181,
+	},
+	{
+		r: 194,
+		g: 21, 
+		b: 21,
+	},
+	{
+		r: 35,
+		g: 143, 
+		b: 8,
+	},
+	{
+		r: 255,
+		g: 255, 
+		b: 0,
+	},
+	{
+		r: 189,
+		g: 157, 
+		b: 188,
+	},
+	{
+		r: 84,
+		g: 209, 
+		b: 113,
+	},
+	{
+		r: 255,
+		g: 255, 
+		b: 255,
+	},
+	{
+		r: 100,
+		g: 85, 
+		b: 240,
+	},
+	{
+		r: 54,
+		g: 141, 
+		b: 168,
+	},
+]
 
 //Paddle
 var paddle = new Object();
@@ -58,6 +112,9 @@ function rect(x, y, w, h, r, g, b)
 	//ctx.fillStyle = "rgb(222, 33, 22)";
 	ctx.fillStyle = 'rgb(' + r + ',' + g + ',' + b + ')';
 	ctx.fill();
+	ctx.fillStyle = 'rgb(0,0,0)';
+	ctx.lineWidth = 2;
+	ctx.stroke();
 }
 
 function rectToBallCollide(rect)
@@ -75,7 +132,13 @@ function clear()
 function gameOver()
 {
 	clearInterval(interval);
-	// alert('Game Over');
+	clear();
+	rect(0,0,WIDTH,HEIGHT,0,0,0);
+	ctx.fillStyle = '#fff';
+	ctx.font = 'bold 80px Londrina Shadow';
+	ctx.textBaseline = 'bottom';
+	ctx.fillText('GAME OVER', 80, 280);
+	$('#canvas').removeClass('gameBorder');
 }
 //Resizes the paddle for a set time before reverting to its original size
 function tempResize(size, time)
@@ -85,15 +148,22 @@ function tempResize(size, time)
 	setTimeout(function() {
 		paddle.resize = originalSize; }, time);
 }
+function resetLivesColor()
+{
+	$('#lives').css('color', '#000');
+}
 function playerDie()
 {
 	lives -= 1;
-	$('#lives').html(lives);
-	if(lives > 0)
+	if(lives > -1)
 	{
 		x = 150;
 		y = 150;
 		timerOffset = 10;
+		$('#lives').html(lives).css({
+			color: '#F00',
+		});
+		setTimeout(resetLivesColor, 200);
 	}
 	else
 	{
@@ -118,22 +188,43 @@ function brick (x,y, score,r,g,b){
 }
 
 function level (r, g, b){
+
 	this.r = r;
 	this.g = g;
 	this.b = b;
 }
 
 function setlevelcolors(){
+
 	levels = new Array();
-	for(var i = 0; i < 10; i++)
+	for(var i = 0; i < MAXLEVEL; i++)
 	{
-		levels[i] = new level(i, randomColor(), randomColor(), randomColor());
+		levels.push(new level(levelColors[i].r, levelColors[i].g, levelColors[i].b));
 	}
 }
 
-function setLevel(){
-	levels[0];
+function playerWon()
+{
+	clearInterval(interval);
+	// rect(0,0,WIDTH,HEIGHT,0,0,0);
+	ctx.fillStyle = 'rgb(35,143,8)';
+	ctx.font = 'bold 80px Londrina Shadow';
+	ctx.textBaseline = 'bottom';
+	ctx.fillText("You've Won!", 80, 280);
+}
 
+function setLevel()
+{
+	currentLevel++;
+	if(currentLevel == 10)
+	{
+		playerWon();
+	}
+	initBricks();
+	x = 150;
+	y = 150;
+	timerOffset = 10;
+	$('#level').html(currentLevel+1);
 }
 
 function drawBricks()
@@ -152,6 +243,7 @@ function initBricks()
 	var r = levels[currentLevel].r;
 	var g = levels[currentLevel].g;
 	var b = levels[currentLevel].b;
+	console.log(r+','+g+','+b);
 	bricks = new Array();
 	score = SCOREMULTIPLIER*ROWS;
 
@@ -162,7 +254,7 @@ function initBricks()
 		b -= 30;
 		for(i = 0; i < COLUMNS; i++)
 		{
-			bricks.push(new brick((i*70)+10,(j*25)+10, score,r,g,b));
+			bricks.push(new brick((i*(BLOCKWIDTH+GUTTER))+7,(j*(BLOCKHEIGHT+GUTTER))+20, score,r,g,b));
 		}
 		score -= SCOREMULTIPLIER;
 	}
@@ -180,6 +272,10 @@ function removeBrick()
 			addScore(bricks[i].score);
 			bricks.splice(i, 1);
 			dy *= -1;
+			if(bricks.length == 0)
+			{
+				setLevel();
+			}
 			return;
 		}
 	}

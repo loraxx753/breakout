@@ -3,6 +3,8 @@ function draw()
 	clear();
 	circle(x, y, 10);
 	rect(paddle.x, paddle.y, paddle.width * paddle.resize, paddle.height);
+	removeBrick();
+	drawBricks();
 	if(timerOffset == 0)
 	{
 		if(x + dx + 10 > WIDTH || x + dx - 10 < 0)
@@ -36,8 +38,6 @@ function draw()
 	{
 		timerOffset--;
 	}
-	removeBrick();
-	drawBricks();
 }
 $(document).ready(function() {  
 	interval = init();
@@ -62,5 +62,9 @@ $(document).ready(function() {
 		{
 			right = false;
 		}
+	});
+	$('#levelup').click(function(e) {
+		e.preventDefault();
+		setLevel();
 	});
 });
