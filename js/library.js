@@ -50,10 +50,11 @@ function rect(x, y, w, h)
 	ctx.closePath();
 	ctx.fill();
 }
-function paddleToBallCollide()
+
+function rectToBallCollide(rect)
 {
-	if(x + 10 > paddle.x && x - 10 < paddle.x + paddle.width &&
-	y + 10 > paddle.y && y - 10 < paddle.y + paddle.height)
+	if(x + 10 > rect.x && x - 10 < rect.x + rect.width &&
+	y + 10 > rect.y && y - 10 < rect.y + rect.height)
 		return true;
 	return false;
 }
