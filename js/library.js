@@ -131,8 +131,14 @@ function setlevelcolors(){
 	}
 }
 
-function setLevel(){
-	levels[0];
+function nextLevel(){
+	currentLevel++;
+	$('#level').html(currentLevel+1);
+	x = 150;
+	y = 150;
+	paddle.x = (WIDTH-paddle.width)/2;
+	paddle.y = HEIGHT-paddle.height-10;
+	initBricks();
 
 }
 
@@ -145,7 +151,6 @@ function drawBricks()
 	}
 	ctx.restore();
 }
-
 
 function initBricks()
 {
@@ -180,6 +185,8 @@ function removeBrick()
 			addScore(bricks[i].score);
 			bricks.splice(i, 1);
 			dy *= -1;
+			if(bricks.length < 1)
+				nextLevel();
 			return;
 		}
 	}
