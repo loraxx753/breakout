@@ -65,7 +65,7 @@ function clear()
 function gameOver()
 {
 	clearInterval(interval);
-	alert('Game Over');
+	// alert('Game Over');
 }
 //Resizes the paddle for a set time before reverting to its original size
 function tempResize(size, time)
@@ -94,13 +94,15 @@ function playerDie()
 function brick (x,y){
 	this.x = x;
 	this.y = y;
+	this.width = BLOCKWIDTH;
+	this.height = BLOCKHEIGHT;
 }
 
 function drawBricks()
 {
 	for(var i = 0; i < bricks.length; i++)
 	{
-		rect(bricks[i].x, bricks[i].y, BLOCKWIDTH, BLOCKHEIGHT);
+		rect(bricks[i].x, bricks[i].y, bricks[i].width, bricks[y].height);
 	}
 }
 
@@ -117,10 +119,10 @@ function initBricks()
 	}
 }
 
-function removeBrick(x, y)
+function removeBrick()
 {
 	for(var i = 0; i < bricks.length; i++){
-		if(bricks[i].x == x && bricks[i].y == y)
+		if(collide(brick[i]))
 		{
 			bricks.splice(i, 1);
 		}
