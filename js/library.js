@@ -12,7 +12,11 @@ var interval;
 var timerOffset = 10;
 var BLOCKWIDTH = 60;
 var BLOCKHEIGHT = 20;
+var ROWS = 4;
+var COLUMNS = 7;
+var SCOREMULTIPLIER = 10;
 var bricks;
+var closeBrick = 0;
 
 //Paddle
 var paddle = new Object();
@@ -92,11 +96,12 @@ function playerDie()
 	}
 }
 
-function brick (x,y){
+function brick (x,y, score){
 	this.x = x;
 	this.y = y;
 	this.width = BLOCKWIDTH;
 	this.height = BLOCKHEIGHT;
+	this.score = score;
 }
 
 function drawBricks()
@@ -112,26 +117,40 @@ function drawBricks()
 function initBricks()
 {
 	bricks = new Array();
-	for(i = 0; i < 7; i++)
+	score = SCOREMULTIPLIER*ROWS;
+	for(j = 0; j < ROWS; j++)
 	{
-		for(j = 0; j < 4; j++)
+		for(i = 0; i < COLUMNS; i++)
 		{
-			bricks.push(new brick(i*70,j*25));
-
+			bricks.push(new brick(i*70,j*25, score));
 		}
+		score -= SCOREMULTIPLIER;
 	}
 }
 
 function removeBrick()
 {
+
+	//The ball is too low to be near any of the bricks
+	if(y < closeBrick)
+		return;
 	for(var i = 0; i < bricks.length; i++){
 		if(rectToBallCollide(bricks[i]))
 		{
+			addScore(bricks[i].score);
 			bricks.splice(i, 1);
 			dy *= -1;
 			return;
 		}
 	}
+
+}
+
+function addScore(amount)
+{
+	currentScore = parseInt($('#score').html());
+	currentScore += amount;
+	$('#score').html(currentScore);
 
 }
 
