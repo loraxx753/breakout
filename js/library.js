@@ -10,6 +10,9 @@ var ctx;
 var gameover = false;
 var interval;
 var timerOffset = 10;
+var BLOCKWIDTH = 60;
+var BLOCKHEIGHT = 20;
+var bricks;
 
 //Paddle
 var paddle = new Object();
@@ -28,6 +31,7 @@ function init()
 	paddle.speed = 5;
 	paddle.resize= 1.0;
 	$('#lives').html(lives);
+	initBricks();
 	return setInterval(draw, 10);
 }
 
@@ -62,7 +66,7 @@ function clear()
 function gameOver()
 {
 	clearInterval(interval);
-	alert('Game Over');
+	// alert('Game Over');
 }
 //Resizes the paddle for a set time before reverting to its original size
 function tempResize(size, time)
@@ -85,6 +89,48 @@ function playerDie()
 	else
 	{
 		gameOver();
+	}
+}
+
+function brick (x,y){
+	this.x = x;
+	this.y = y;
+	this.width = BLOCKWIDTH;
+	this.height = BLOCKHEIGHT;
+}
+
+function drawBricks()
+{
+	ctx.save();
+	for(var i = 0; i < bricks.length; i++)
+	{
+		rect(bricks[i].x, bricks[i].y, bricks[i].width, bricks[i].height);
+	}
+	ctx.restore();
+}
+
+function initBricks()
+{
+	bricks = new Array();
+	for(i = 0; i < 7; i++)
+	{
+		for(j = 0; j < 4; j++)
+		{
+			bricks.push(new brick(i*70,j*25));
+
+		}
+	}
+}
+
+function removeBrick()
+{
+	for(var i = 0; i < bricks.length; i++){
+		if(rectToBallCollide(bricks[i]))
+		{
+			bricks.splice(i, 1);
+			dy *= -1;
+			return;
+		}
 	}
 
 }
