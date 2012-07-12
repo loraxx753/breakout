@@ -3,28 +3,45 @@ function draw()
 	clear();
 	circle(x, y, 10);
 	rect(paddle.x, paddle.y, paddle.width, paddle.height);
-
-	if(x + dx + 10 > WIDTH || x + dx - 10 < 0)
-		dx = -dx-1;
-	if(y + dy + 10 > HEIGHT || y + dy - 10 < 0)
-		dy = -dy;
-	if(left && paddle.x - paddle.speed > 0)
+	if(timerOffset == 0)
 	{
-		paddle.x -= paddle.speed;
+		if(x + dx + 10 > WIDTH || x + dx - 10 < 0)
+			dx = -dx-1;
+		if(y + dy - 10 < 0)
+			dy = -dy;
+		if(y + dy + 10 > HEIGHT)
+		{
+			playerDie();
+		}
+		else
+		{
+			x += dx;
+			y += dy;		
+		}
+		if(left && paddle.x - paddle.speed > 0)
+		{
+			paddle.x -= paddle.speed;
+		}
+		else if(right && paddle.x + paddle.speed + paddle.width < WIDTH)
+		{
+			paddle.x += paddle.speed;
+		}
+		if(paddleToBallCollide())
+		{
+			dy *= -1;
+		}
 	}
-	else if(right && paddle.x + paddle.speed + paddle.width < WIDTH)
+	else
 	{
-		paddle.x += paddle.speed;
+		timerOffset--;
 	}
-	if(paddleToBallCollide())
-	{
-		dy *= -1;
-	}
-	x += dx;
-	y += dy;
+		
+		
+		
+		
 }
 $(document).ready(function() {  
-	init();
+	interval = init();
 	//Sets flags for which key is being held down to be used in the Draw()
 	$(document).keydown(function(e) {
 		if(e.keyCode==37 || e.keyCode==65) //left
