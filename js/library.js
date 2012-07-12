@@ -180,7 +180,6 @@ function removeBrick()
 			addScore(bricks[i].score);
 			bricks.splice(i, 1);
 			dy *= -1;
-			if()
 			return;
 		}
 	}
