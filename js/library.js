@@ -16,6 +16,7 @@ var ROWS = 4;
 var COLUMNS = 7;
 var SCOREMULTIPLIER = 10;
 var bricks;
+var closeBrick = 0;
 
 //Paddle
 var paddle = new Object();
@@ -129,6 +130,9 @@ function initBricks()
 
 function removeBrick()
 {
+	//The ball is too low to be near any of the bricks
+	if(y < closeBrick)
+		return;
 	for(var i = 0; i < bricks.length; i++){
 		if(rectToBallCollide(bricks[i]))
 		{
