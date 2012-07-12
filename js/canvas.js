@@ -37,7 +37,7 @@ function draw()
 	}
 	removeBrick();
 	drawBricks();
-
+	handlePowerups();
 }
 $(document).ready(function() {  
 	interval = init();

@@ -13,7 +13,11 @@ var timerOffset = 10;
 var BLOCKWIDTH = 60;
 var BLOCKHEIGHT = 20;
 var bricks;
+var powerups;
 var closeBrick = 0;
+
+var sizeImage = new Image();
+sizeImage.src = "size_powerup.png";
 
 //Paddle
 var paddle = new Object();
@@ -33,6 +37,8 @@ function init()
 	paddle.resize= 1.0;
 	$('#lives').html(lives);
 	initBricks();
+	powerups = new Array();
+	powerups.push(new powerup(50, 0, 1));
 	return setInterval(draw, 10);
 }
 
@@ -99,7 +105,40 @@ function brick (x,y){
 	this.width = BLOCKWIDTH;
 	this.height = BLOCKHEIGHT;
 }
-
+function powerup(x, y, type)
+{
+	this.x = x;
+	this.y = y;
+	this.width = 20;
+	this.height = 20;
+	this.speed = 1;
+	this.type = type;
+}
+function handlePowerups()
+{
+	for(var i = 0; i < powerups.length; i++)
+	{
+		if(rectToBallCollide(powerups[i]))
+		{
+			switch(powerups[i].type)
+			{
+				default: 
+				resize(1.5, 5000); 
+				alert("HIT");
+				break;
+			}
+			powerups.splice(i, 1);
+			continue;
+		}
+		powerups[i].y += powerups[i].speed;
+		switch(powerups[i].type)
+		{
+			default: 		
+				ctx.drawImage(sizeImage,  powerups[i].x, powerups[i].y);
+				break;
+		}
+	}
+}
 function drawBricks()
 {
 	ctx.save();
