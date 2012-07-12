@@ -21,12 +21,12 @@ function init()
 	ctx = $('#canvas')[0].getContext('2d');
 	WIDTH = $('#canvas').width();
 	HEIGHT = $('#canvas').height();
-	paddle.width = 100;
-	paddle.height = 35;	
+	paddle.width = 80;
+	paddle.height = 15;	
 	paddle.x = 0;
 	paddle.y = HEIGHT-paddle.height;
 	paddle.speed = 5;
-	paddle.rescale = 1.0;
+	paddle.resize= 1.0;
 	$('#lives').html(lives);
 	return setInterval(draw, 10);
 }
@@ -63,7 +63,14 @@ function gameOver()
 	clearInterval(interval);
 	alert('Game Over');
 }
-
+//Resizes the paddle for a set time before reverting to its original size
+function tempResize(size, time)
+{
+	var originalSize = paddle.resize; 
+	paddle.resize = size;
+	setTimeout(function() {
+		paddle.resize = originalSize; }, time);
+}
 function playerDie()
 {
 	lives -= 1;
