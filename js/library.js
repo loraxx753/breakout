@@ -101,10 +101,12 @@ function brick (x,y){
 
 function drawBricks()
 {
+	ctx.save();
 	for(var i = 0; i < bricks.length; i++)
 	{
-		rect(bricks[i].x, bricks[i].y, bricks[i].width, bricks[y].height);
+		rect(bricks[i].x, bricks[i].y, bricks[i].width, bricks[i].height);
 	}
+	ctx.restore();
 }
 
 function initBricks()
@@ -123,9 +125,11 @@ function initBricks()
 function removeBrick()
 {
 	for(var i = 0; i < bricks.length; i++){
-		if(collide(brick[i]))
+		if(rectToBallCollide(bricks[i]))
 		{
 			bricks.splice(i, 1);
+			dy *= -1;
+			return;
 		}
 	}
 
