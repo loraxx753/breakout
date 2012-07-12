@@ -1,77 +1,20 @@
 // BEGIN LIBRARY CODE
+
 var x = 150;
 var y = 150;
 var dx = 2;
 var dy = 4;
 var lives = 3;
-var WIDTH;
-var HEIGHT;
 var ctx;
-var gameover = false;
+var gameOver = false;
+var gameWon = false;
 var interval;
 var timerOffset = 10;
-var BLOCKWIDTH = 65;
-var GUTTER = 5;
-var BLOCKHEIGHT = 20;
-var ROWS = 4;
-var COLUMNS = 7;
-var SCOREMULTIPLIER = 10;
-var MAXLEVEL = 10;
 var bricks;
 var closeBrick = 0;
 var currentLevel = 0;
-var levelColors = [
-	{
-		r: 193,
-		g: 82, 
-		b: 218,
-	},
-	{
-		r: 117,
-		g: 185, 
-		b: 181,
-	},
-	{
-		r: 194,
-		g: 21, 
-		b: 21,
-	},
-	{
-		r: 35,
-		g: 143, 
-		b: 8,
-	},
-	{
-		r: 255,
-		g: 255, 
-		b: 0,
-	},
-	{
-		r: 189,
-		g: 157, 
-		b: 188,
-	},
-	{
-		r: 84,
-		g: 209, 
-		b: 113,
-	},
-	{
-		r: 255,
-		g: 255, 
-		b: 255,
-	},
-	{
-		r: 100,
-		g: 85, 
-		b: 240,
-	},
-	{
-		r: 54,
-		g: 141, 
-		b: 168,
-	},
-]
+var firstTime = true;
+var paused = false;
 
 //Paddle
 var paddle = new Object();
@@ -80,6 +23,7 @@ var paddle = new Object();
 var left = false, right = false;
 function init()
 {
+
 	ctx = $('#canvas')[0].getContext('2d');
 	WIDTH = $('#canvas').width();
 	HEIGHT = $('#canvas').height();
@@ -93,6 +37,7 @@ function init()
 	$('#level').html(currentLevel+1);
 	setlevelcolors();
 	initBricks();
+
 	return setInterval(draw, 10);
 }
 
@@ -129,8 +74,9 @@ function clear()
 	ctx.clearRect(0, 0, WIDTH, HEIGHT);
 }
 
-function gameOver()
+function gameLost()
 {
+	gameOver = true;
 	clearInterval(interval);
 	clear();
 	rect(0,0,WIDTH,HEIGHT,0,0,0);
@@ -167,7 +113,7 @@ function playerDie()
 	}
 	else
 	{
-		gameOver();
+		gameLost();
 	}
 }
 
@@ -187,11 +133,12 @@ function brick (x,y, score,r,g,b){
 	this.b = b;
 }
 
-function level (r, g, b){
+function level (r, g, b, gutter){
 
 	this.r = r;
 	this.g = g;
 	this.b = b;
+	this.gutter = gutter;
 }
 
 function setlevelcolors(){
@@ -199,33 +146,47 @@ function setlevelcolors(){
 	levels = new Array();
 	for(var i = 0; i < MAXLEVEL; i++)
 	{
-		levels.push(new level(levelColors[i].r, levelColors[i].g, levelColors[i].b));
+		levels.push(new level(LEVELCOLORS[i].r, LEVELCOLORS[i].g, LEVELCOLORS[i].b, (TOPGUTTER * (i+1))));
 	}
 }
 
 function playerWon()
 {
+	if(paused)
+	{
+		draw();
+	}
+	gameWon = true;
 	clearInterval(interval);
 	// rect(0,0,WIDTH,HEIGHT,0,0,0);
 	ctx.fillStyle = 'rgb(35,143,8)';
 	ctx.font = 'bold 80px Londrina Shadow';
 	ctx.textBaseline = 'bottom';
 	ctx.fillText("You've Won!", 80, 280);
-}
-
-function setLevel()
-{
-	currentLevel++;
-	if(currentLevel == 10)
+	if($('#levelup').length > 0)
 	{
-		playerWon();
+		$('#levelup').unbind('click').click(function(e) {
+			e.preventDefault();
+		});
 	}
-	initBricks();
-	x = 150;
-	y = 150;
-	timerOffset = 10;
-	$('#level').html(currentLevel+1);
 }
+function nextLevel(){
+		currentLevel++;
+		if(currentLevel == 10)
+		{
+			playerWon();
+		}
+		else
+		{
+			$('#level').html(currentLevel+1);
+			x = 150;
+			y = 150 + levels[currentLevel].gutter;
+			paddle.x = (WIDTH-paddle.width)/2;
+			paddle.y = HEIGHT-paddle.height-10;
+			initBricks();
+			timerOffset = 10;			
+		}
+}	
 
 function drawBricks()
 {
@@ -237,13 +198,11 @@ function drawBricks()
 	ctx.restore();
 }
 
-
 function initBricks()
 {
 	var r = levels[currentLevel].r;
 	var g = levels[currentLevel].g;
 	var b = levels[currentLevel].b;
-	console.log(r+','+g+','+b);
 	bricks = new Array();
 	score = SCOREMULTIPLIER*ROWS;
 
@@ -254,10 +213,35 @@ function initBricks()
 		b -= 30;
 		for(i = 0; i < COLUMNS; i++)
 		{
-			bricks.push(new brick((i*(BLOCKWIDTH+GUTTER))+7,(j*(BLOCKHEIGHT+GUTTER))+20, score,r,g,b));
+			bricks.push(new brick((i*(BLOCKWIDTH+GUTTER))+7,(j*(BLOCKHEIGHT+GUTTER))+levels[currentLevel].gutter, score,r,g,b));
 		}
 		score -= SCOREMULTIPLIER;
 	}
+}
+
+function pauseGameToggle()
+{
+	if(!interval)
+	{
+		interval = setInterval(draw, 10);
+		paused = false;
+	}
+	else
+	{
+		paused = true;
+		clearInterval(interval);
+		interval = null;		
+		ctx.save();
+		ctx.fillStyle = 'rgb(0,0,0)';
+		ctx.font = 'bold 80px Londrina Shadow';
+		ctx.textBaseline = 'bottom';
+		if(currentLevel < 7)
+			ctx.fillText("Paused!", 120, 300);
+		else
+			ctx.fillText("Paused!", 120, 100);
+		ctx.restore();
+	}
+
 }
 
 function removeBrick()
@@ -272,10 +256,8 @@ function removeBrick()
 			addScore(bricks[i].score);
 			bricks.splice(i, 1);
 			dy *= -1;
-			if(bricks.length == 0)
-			{
-				setLevel();
-			}
+			if(bricks.length < 1)
+				nextLevel();
 			return;
 		}
 	}
@@ -287,7 +269,6 @@ function addScore(amount)
 	currentScore = parseInt($('#score').html());
 	currentScore += amount;
 	$('#score').html(currentScore);
-
 }
 
 //END LIBRARY CODE

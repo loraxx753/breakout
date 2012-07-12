@@ -6,6 +6,7 @@
 		<link rel="stylesheet" href="" />
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
 		<script src="js/library.js"></script>
+		<script src="js/constants.js"></script>
 		<script src="js/canvas.js"></script>
 		<link href='http://fonts.googleapis.com/css?family=Londrina+Shadow' rel='stylesheet' type='text/css'>
 
@@ -54,6 +55,12 @@
 				margin: 0;
 				display: inline-block;
 			}
+			.start {
+				position: absolute;
+				top: 350px;
+				left: 104px;
+				font-size: 2em;
+			}
 
 		</style>
 	</head>
@@ -63,12 +70,12 @@
 		<div class="field">
 			<h1>BREAKOUT</h1>
 			<p class="infofloat">Score: <span id="score">0</span></p>
+			<p class="start">Press Enter To Begin</p>
 			<canvas id="canvas" class="gameBorder" width="500" height="500">  
 			    <!-- Insert fallback content here -->  
 			</canvas>  
 			<p class="levelLeft">Level: <span id="level"></span></p>
 			<p class="info"> Lives: <span id="lives"></span></p>
-			<p><a href="#" id="levelup">Skip Level</a></p>
 		</div>
 		</div>
 	</body>
