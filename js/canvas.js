@@ -37,7 +37,6 @@ function draw()
 	}
 	removeBrick();
 	drawBricks();
-
 }
 $(document).ready(function() {  
 	interval = init();
