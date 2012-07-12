@@ -7,6 +7,8 @@
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
 		<script src="js/library.js"></script>
 		<script src="js/canvas.js"></script>
+		<link href='http://fonts.googleapis.com/css?family=Londrina+Shadow' rel='stylesheet' type='text/css'>
+
 		<style>
 			body {
 				height: 100%;
@@ -17,6 +19,8 @@
 				background: white;
 			}
 			.arena {
+				font-family: 'Londrina Shadow', cursive;
+				font-size: 1.2em;
 				margin: 0 auto;
 				width: 960px;
 				height: 100%;
@@ -25,16 +29,19 @@
 				width: 500px;
 				margin: 0 auto;
 			}
+			.info {
+				text-align: right;
+			}
 
 		</style>
 	</head>
 	<body>
 		<div class="arena">
 		<div class="field">
-			<p>Lives: <span id="lives"></span> Score: <span id="score">0</span></p>
 			<canvas id="canvas" width="500" height="500">  
 			    <!-- Insert fallback content here -->  
 			</canvas>  
+			<p class="info">Lives: <span id="lives"></span> Score: <span id="score">0</span></p>
 		</div>
 		</div>
 	</body>
