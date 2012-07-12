@@ -6,7 +6,7 @@ function draw()
 	if(timerOffset == 0)
 	{
 		if(x + dx + 10 > WIDTH || x + dx - 10 < 0)
-			dx = -dx-1;
+			dx = -dx;
 		if(y + dy - 10 < 0)
 			dy = -dy;
 		if(y + dy + 10 > HEIGHT)
@@ -29,6 +29,7 @@ function draw()
 		if(rectToBallCollide(paddle) && dy >0)
 		{
 			dy *= -1;
+
 		}
 	}
 	else

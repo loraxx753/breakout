@@ -31,8 +31,8 @@ function init()
 	HEIGHT = $('#canvas').height();
 	paddle.width = 80;
 	paddle.height = 15;	
-	paddle.x = 0;
-	paddle.y = HEIGHT-paddle.height;
+	paddle.x = (WIDTH-paddle.width)/2;
+	paddle.y = HEIGHT-paddle.height-10;
 	paddle.speed = 5;
 	paddle.resize= 1.0;
 	$('#lives').html(lives);
