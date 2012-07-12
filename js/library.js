@@ -47,11 +47,15 @@ function circle(x, y, r)
 	ctx.fill();
 }
 
-function rect(x, y, w, h)
+
+
+function rect(x, y, w, h, r, g, b)
 {
 	ctx.beginPath();
 	ctx.rect(x,y,w,h);
 	ctx.closePath();
+	//ctx.fillStyle = "rgb(222, 33, 22)";
+	ctx.fillStyle = 'rgb(' + r + ',' + g + ',' + b + ')';
 	ctx.fill();
 }
 
@@ -96,12 +100,20 @@ function playerDie()
 	}
 }
 
-function brick (x,y, score){
+function randomColor()
+{
+	return Math.floor(Math.random()*215)+40;
+}
+
+function brick (x,y, score,r,g,b){
 	this.x = x;
 	this.y = y;
 	this.width = BLOCKWIDTH;
 	this.height = BLOCKHEIGHT;
 	this.score = score;
+	this.r = r;
+	this.g = g;
+	this.b = b;
 }
 
 function drawBricks()
@@ -109,20 +121,27 @@ function drawBricks()
 	ctx.save();
 	for(var i = 0; i < bricks.length; i++)
 	{
-		rect(bricks[i].x, bricks[i].y, bricks[i].width, bricks[i].height);
+		rect(bricks[i].x, bricks[i].y, bricks[i].width, bricks[i].height, bricks[i].r, bricks[i].g, bricks[i].b);
 	}
 	ctx.restore();
 }
 
 function initBricks()
 {
+	var r = randomColor();
+	var g = randomColor();
+	var b = randomColor();
 	bricks = new Array();
 	score = SCOREMULTIPLIER*ROWS;
+
 	for(j = 0; j < ROWS; j++)
 	{
+		r -= 30;
+		g -= 30;
+		b -= 30;
 		for(i = 0; i < COLUMNS; i++)
 		{
-			bricks.push(new brick(i*70,j*25, score));
+			bricks.push(new brick(i*70,j*25, score,r,g,b));
 		}
 		score -= SCOREMULTIPLIER;
 	}
@@ -130,6 +149,7 @@ function initBricks()
 
 function removeBrick()
 {
+
 	//The ball is too low to be near any of the bricks
 	if(y < closeBrick)
 		return;
@@ -150,7 +170,6 @@ function addScore(amount)
 	currentScore = parseInt($('#score').html());
 	currentScore += amount;
 	$('#score').html(currentScore);
-
 
 }
 
