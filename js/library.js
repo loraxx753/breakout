@@ -13,6 +13,7 @@ var timerOffset = 10;
 var BLOCKWIDTH = 60;
 var BLOCKHEIGHT = 20;
 var bricks;
+var closeBrick = 0;
 
 //Paddle
 var paddle = new Object();
@@ -117,13 +118,19 @@ function initBricks()
 		for(j = 0; j < 4; j++)
 		{
 			bricks.push(new brick(i*70,j*25));
-
+			if(j*25 > closeBrick) 
+			{
+				
+			}
 		}
 	}
 }
 
 function removeBrick()
 {
+	//The ball is too low to be near any of the bricks
+	if(y < closeBrick)
+		return;
 	for(var i = 0; i < bricks.length; i++){
 		if(rectToBallCollide(bricks[i]))
 		{
