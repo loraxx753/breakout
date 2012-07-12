@@ -10,6 +10,9 @@ var ctx;
 var gameover = false;
 var interval;
 var timerOffset = 10;
+var BLOCKWIDTH = 60;
+var BLOCKHEIGHT = 20;
+var bricks;
 
 //Paddle
 var paddle = new Object();
@@ -28,6 +31,7 @@ function init()
 	paddle.speed = 5;
 	paddle.resize= 1.0;
 	$('#lives').html(lives);
+	initBricks();
 	return setInterval(draw, 10);
 }
 
@@ -84,6 +88,42 @@ function playerDie()
 	else
 	{
 		gameOver();
+	}
+}
+
+function brick (x,y){
+	this.x = x;
+	this.y = y;
+}
+
+function drawBricks()
+{
+	for(var i = 0; i < bricks.length; i++)
+	{
+		rect(bricks[i].x, bricks[i].y, BLOCKWIDTH, BLOCKHEIGHT);
+	}
+}
+
+function initBricks()
+{
+	bricks = new Array();
+	for(i = 0; i < 7; i++)
+	{
+		for(j = 0; j < 4; j++)
+		{
+			bricks.push(new brick(i*70,j*25));
+
+		}
+	}
+}
+
+function removeBrick(x, y)
+{
+	for(var i = 0; i < bricks.length; i++){
+		if(bricks[i].x == x && bricks[i].y == y)
+		{
+			bricks.splice(i, 1);
+		}
 	}
 
 }

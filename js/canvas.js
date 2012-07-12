@@ -35,10 +35,7 @@ function draw()
 	{
 		timerOffset--;
 	}
-		
-		
-		
-		
+	drawBricks();
 }
 $(document).ready(function() {  
 	interval = init();
