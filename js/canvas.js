@@ -26,7 +26,7 @@ function draw()
 		{
 			paddle.x += paddle.speed;
 		}
-		if(rectToBallCollide(paddle.height, paddle.width, paddle.x, paddle.y) && dy >0)
+		if(rectToBallCollide(paddle) && dy >0)
 		{
 			dy *= -1;
 		}

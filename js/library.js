@@ -47,10 +47,10 @@ function rect(x, y, w, h)
 	ctx.fill();
 }
 
-function rectToBallCollide(height, width, rectx, recty)
+function rectToBallCollide(rect)
 {
-	if(x + 10 > rectx && x - 10 < rectx + width &&
-	y + 10 > recty && y - 10 < recty + height)
+	if(x + 10 > rect.x && x - 10 < rect.x + rect.width &&
+	y + 10 > rect.y && y - 10 < rect.y + rect.height)
 		return true;
 	return false;
 }
