@@ -90,6 +90,7 @@ function gameLost()
 	ctx.textBaseline = 'bottom';
 	ctx.fillText('GAME OVER', 80, 280);
 	$('#canvas').removeClass('gameBorder');
+	$('#levelup').remove();
 }
 function playerWon()
 {
