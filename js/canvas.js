@@ -4,9 +4,10 @@ function draw()
 {
 	clear();
 	circle(x, y, 10);
-	rect(paddle.x, paddle.y, paddle.width * paddle.resize, paddle.height);
+	rect(paddle.x, paddle.y, paddle.width, paddle.height);
 	removeBrick();
 	drawBricks();
+	handlePowerups();
 	if(timerOffset == 0)
 	{
 		if(x + dx + 10 > WIDTH || x + dx - 10 < 0)
@@ -40,9 +41,6 @@ function draw()
 	{
 		timerOffset--;
 	}
-	removeBrick();
-	drawBricks();
-	handlePowerups();
 	if(firstTime)
 	{
 		clearInterval(interval);

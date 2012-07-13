@@ -11,7 +11,8 @@ var gameWon = false;
 var interval;
 var timerOffset = 10;
 var bricks;
-var powerups;
+var powerups = new Array();
+var powertypes = new Array('resize');;
 var closeBrick = 0;
 var currentLevel = 0;
 var firstTime = true;
@@ -19,6 +20,8 @@ var paused = false;
 
 var sizeImage = new Image();
 sizeImage.src = "size_powerup.png";
+var slowImage = new Image();
+slowImage.src = "slow_powerup.png";
 
 //Paddle
 var paddle = new Object();
@@ -37,15 +40,16 @@ function init()
 	paddle.y = HEIGHT-paddle.height-10;
 	paddle.speed = 5;
 	paddle.resize= 1.0;
+	paddle.power = false;
 	$('#lives').html(lives);
 	$('#level').html(currentLevel+1);
 	setlevelcolors();
 	initBricks();
-	powerups = new Array();
-	powerups.push(new powerup(50, 0, 1));
 	return setInterval(draw, 10);
 }
-
+/* * * * * * * * * * * * * * * * * * * 
+ * SHAPES 
+ * * * * * * * * * * * * * * * * * * */
 function circle(x, y, r)
 {
 	ctx.beginPath();
@@ -67,18 +71,14 @@ function rect(x, y, w, h, r, g, b)
 	ctx.stroke();
 }
 
-function rectToBallCollide(rect)
-{
-	if(x + 10 > rect.x && x - 10 < rect.x + rect.width &&
-	y + 10 > rect.y && y - 10 < rect.y + rect.height)
-		return true;
-	return false;
-}
 function clear()
 {
 	ctx.clearRect(0, 0, WIDTH, HEIGHT);
 }
 
+/* * * * * * * * * * * * * * * * * * * 
+ * STOP CONDITIONS 
+ * * * * * * * * * * * * * * * * * * */
 function gameLost()
 {
 	gameOver = true;
@@ -91,14 +91,54 @@ function gameLost()
 	ctx.fillText('GAME OVER', 80, 280);
 	$('#canvas').removeClass('gameBorder');
 }
-//Resizes the paddle for a set time before reverting to its original size
-function tempResize(size, time)
+function playerWon()
 {
-	var originalSize = paddle.resize; 
-	paddle.resize = size;
-	setTimeout(function() {
-		paddle.resize = originalSize; }, time);
+	if(paused)
+	{
+		draw();
+	}
+	gameWon = true;
+	clearInterval(interval);
+	// rect(0,0,WIDTH,HEIGHT,0,0,0);
+	ctx.fillStyle = 'rgb(35,143,8)';
+	ctx.font = 'bold 80px Londrina Shadow';
+	ctx.textBaseline = 'bottom';
+	ctx.fillText("You've Won!", 80, 280);
+	if($('#levelup').length > 0)
+	{
+		$('#levelup').unbind('click').click(function(e) {
+			e.preventDefault();
+		});
+	}
 }
+
+function pauseGameToggle()
+{
+	if(!interval)
+	{
+		interval = setInterval(draw, 10);
+		paused = false;
+	}
+	else
+	{
+		paused = true;
+		clearInterval(interval);
+		interval = null;		
+		ctx.save();
+		ctx.fillStyle = 'rgb(0,0,0)';
+		ctx.font = 'bold 80px Londrina Shadow';
+		ctx.textBaseline = 'bottom';
+		if(currentLevel < 7)
+			ctx.fillText("Paused!", 120, 300);
+		else
+			ctx.fillText("Paused!", 120, 100);
+		ctx.restore();
+	}
+
+}
+
+
+
 function resetLivesColor()
 {
 	$('#lives').css('color', '#000');
@@ -127,7 +167,7 @@ function randomColor()
 	return Math.floor(Math.random()*215)+40;
 }
 
-function brick (x,y, score,r,g,b){
+function brick (x,y, score,r,g,b,power){
 	this.x = x;
 	this.y = y;
 	this.width = BLOCKWIDTH;
@@ -136,6 +176,7 @@ function brick (x,y, score,r,g,b){
 	this.r = r;
 	this.g = g;
 	this.b = b;
+	this.power = power;
 }
 
 function level (r, g, b, gutter){
@@ -152,61 +193,6 @@ function setlevelcolors(){
 	for(var i = 0; i < MAXLEVEL; i++)
 	{
 		levels.push(new level(LEVELCOLORS[i].r, LEVELCOLORS[i].g, LEVELCOLORS[i].b, (TOPGUTTER * (i+1))));
-	}
-}
-function powerup(x, y, type)
-{
-	this.x = x;
-	this.y = y;
-	this.width = 20;
-	this.height = 20;
-	this.speed = 1;
-	this.type = type;
-}
-function handlePowerups()
-{
-	for(var i = 0; i < powerups.length; i++)
-	{
-		if(rectToBallCollide(powerups[i]))
-		{
-			switch(powerups[i].type)
-			{
-				default: 
-				resize(1.5, 5000); 
-				alert("HIT");
-				break;
-			}
-			powerups.splice(i, 1);
-			continue;
-		}
-		powerups[i].y += powerups[i].speed;
-		switch(powerups[i].type)
-		{
-			default: 		
-				ctx.drawImage(sizeImage,  powerups[i].x, powerups[i].y);
-				break;
-		}
-	}
-}
-
-function playerWon()
-{
-	if(paused)
-	{
-		draw();
-	}
-	gameWon = true;
-	clearInterval(interval);
-	// rect(0,0,WIDTH,HEIGHT,0,0,0);
-	ctx.fillStyle = 'rgb(35,143,8)';
-	ctx.font = 'bold 80px Londrina Shadow';
-	ctx.textBaseline = 'bottom';
-	ctx.fillText("You've Won!", 80, 280);
-	if($('#levelup').length > 0)
-	{
-		$('#levelup').unbind('click').click(function(e) {
-			e.preventDefault();
-		});
 	}
 }
 function nextLevel(){
@@ -251,36 +237,30 @@ function initBricks()
 		b -= 30;
 		for(i = 0; i < COLUMNS; i++)
 		{
-			bricks.push(new brick((i*(BLOCKWIDTH+GUTTER))+7,(j*(BLOCKHEIGHT+GUTTER))+levels[currentLevel].gutter, score,r,g,b));
+			var random = Math.floor(Math.random()*(powertypes.length*FREQUENCY));
+			if(powertypes[random])
+			{
+				power = powertypes[random];
+			}
+			else
+			{
+				power = null;
+			}
+			bricks.push(
+				new brick(
+					(i*(BLOCKWIDTH+GUTTER))+7,
+					(j*(BLOCKHEIGHT+GUTTER))+levels[currentLevel].gutter, 
+					score,
+					r,
+					g,
+					b,
+					power
+				));
 		}
 		score -= SCOREMULTIPLIER;
 	}
 }
 
-function pauseGameToggle()
-{
-	if(!interval)
-	{
-		interval = setInterval(draw, 10);
-		paused = false;
-	}
-	else
-	{
-		paused = true;
-		clearInterval(interval);
-		interval = null;		
-		ctx.save();
-		ctx.fillStyle = 'rgb(0,0,0)';
-		ctx.font = 'bold 80px Londrina Shadow';
-		ctx.textBaseline = 'bottom';
-		if(currentLevel < 7)
-			ctx.fillText("Paused!", 120, 300);
-		else
-			ctx.fillText("Paused!", 120, 100);
-		ctx.restore();
-	}
-
-}
 
 function removeBrick()
 {
@@ -292,6 +272,12 @@ function removeBrick()
 		if(rectToBallCollide(bricks[i]))
 		{
 			addScore(bricks[i].score);
+			if(bricks[i].power)
+			{
+				var powerX = bricks[i].x + (bricks[i].width/2);
+				var powerY = bricks[i].y + (bricks[i].height/2);
+				createPowerUp(bricks[i].power, powerX, powerY);
+			}
 			bricks.splice(i, 1);
 			dy *= -1;
 			if(bricks.length < 1)
