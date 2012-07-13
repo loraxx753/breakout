@@ -148,7 +148,7 @@ function playerDie()
 	lives -= 1;
 	if(lives > -1)
 	{
-		x = 150;
+		x = 150 + levels[currentLevel].gutter;
 		y = 150;
 		timerOffset = 10;
 		$('#lives').html(lives).css({
