@@ -34,7 +34,7 @@ function draw()
 		if(rectToBallCollide(paddle) && dy >0)
 		{
 			dy *= -1;
-
+			dx = 8 * ((x-(paddle.x+paddle.width/2))/paddle.width);
 		}
 	}
 	else
