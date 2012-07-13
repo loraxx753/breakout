@@ -8,6 +8,7 @@ var WIDTH;
 var HEIGHT;
 var BLOCKWIDTH = 65;
 var TOPGUTTER = 20;
+var FREQUENCY = 3;
 
 var LEVELCOLORS = [
 	{
