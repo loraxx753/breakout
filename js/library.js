@@ -30,17 +30,18 @@ var paddle = new Object();
 var left = false, right = false;
 function init()
 {
-
+	Ball.x = 150;
+	Ball.y = 150;
 	ctx = $('#canvas')[0].getContext('2d');
 	WIDTH = $('#canvas').width();
 	HEIGHT = $('#canvas').height();
-	paddle.width = 80;
-	paddle.height = 15;	
-	paddle.x = (WIDTH-paddle.width)/2;
-	paddle.y = HEIGHT-paddle.height-10;
-	paddle.speed = 5;
-	paddle.resize= 1.0;
-	paddle.power = false;
+	Paddle.width = 80;
+	Paddle.height = 15;	
+	Paddle.x = (WIDTH-Paddle.width)/2;
+	Paddle.y = HEIGHT-Paddle.height-10;
+	Paddle.speed = 5;
+	Paddle.resize= 1.0;
+	Paddle.power = false;
 	$('#lives').html(lives);
 	$('#level').html(currentLevel+1);
 	setlevelcolors();
@@ -149,8 +150,8 @@ function playerDie()
 	lives -= 1;
 	if(lives > -1)
 	{
-		x = 150;
-		y = 150 + levels[currentLevel].gutter;
+		Ball.x = 150;
+		Ball.y = 150 + levels[currentLevel].gutter;
 		timerOffset = 10;
 		$('#lives').html(lives).css({
 			color: '#F00',
@@ -205,10 +206,12 @@ function nextLevel(){
 		else
 		{
 			$('#level').html(currentLevel+1);
-			x = 150;
-			y = 150 + levels[currentLevel].gutter;
-			paddle.x = (WIDTH-paddle.width)/2;
-			paddle.y = HEIGHT-paddle.height-10;
+			Ball.x = 150;
+			Ball.y = 150 + levels[currentLevel].gutter;
+			dx = 2;
+			dy = 4;
+			Paddle.x = (WIDTH-Paddle.width)/2;
+			Paddle.y = HEIGHT-Paddle.height-10;
 			initBricks();
 			timerOffset = 10;			
 		}
@@ -270,7 +273,7 @@ function removeBrick()
 	if(y < closeBrick)
 		return;
 	for(var i = 0; i < bricks.length; i++){
-		if(rectToBallCollide(bricks[i]))
+		if(Collision.brick(bricks[i]))
 		{
 			addScore(bricks[i].score);
 			if(bricks[i].power)

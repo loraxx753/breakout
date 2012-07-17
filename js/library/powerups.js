@@ -10,12 +10,12 @@ function powerup(x, y, type)
 //Resizes the paddle for a set time before reverting to its original size
 function resize(size, time)
 {
-	var originalSize = paddle.width; 
-	paddle.width = paddle.width * size;
-	paddle.power = true;
+	var originalSize = Paddle.width; 
+	Paddle.width = Paddle.width * size;
+	Paddle.power = true;
 	setTimeout(function() {
-		paddle.width = originalSize; 
-		paddle.power = false;
+		Paddle.width = originalSize; 
+		Paddle.power = false;
 	}, time);
 }
 function slow(time)
@@ -40,9 +40,9 @@ function handlePowerups()
 {
 	for(var i = 0; i < powerups.length; i++)
 	{
-		if(rectToPaddleCollide(powerups[i]))
+		if(Collision.power(powerups[i]))
 		{
-			if(paddle.power == false)
+			if(Paddle.power == false)
 			{
 				switch(powerups[i].type)
 				{

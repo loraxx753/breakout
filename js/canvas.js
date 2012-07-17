@@ -3,38 +3,38 @@ var cheater = '';
 function draw()
 {
 	clear();
-	circle(x, y, 10);
-	rect(paddle.x, paddle.y, paddle.width, paddle.height);
+	circle(Ball.x, Ball.y, 10);
+	rect(Paddle.x, Paddle.y, Paddle.width, Paddle.height);
 	removeBrick();
 	drawBricks();
 	handlePowerups();
 	if(timerOffset == 0)
 	{
-		if(x + dx + 10 > WIDTH || x + dx - 10 < 0)
+		if(Ball.x + dx + 10 > WIDTH || Ball.x + dx - 10 < 0)
 			dx = -dx;
-		if(y + dy - 10 < 0)
+		if(Ball.y + dy - 10 < 0)
 			dy = -dy;
-		if(y + dy + 10 > HEIGHT)
+		if(Ball.y + dy + 10 > HEIGHT)
 		{
 			playerDie();
 		}
 		else
 		{
-			x += dx;
-			y += dy;		
+			Ball.x += dx;
+			Ball.y += dy;		
 		}
-		if(left && paddle.x  > 0)
+		if(left && Paddle.x  > 0)
 		{
-			paddle.x -= paddle.speed;
+			Paddle.x -= Paddle.speed;
 		}
-		else if(right && paddle.x  + paddle.width < WIDTH)
+		else if(right && Paddle.x  + Paddle.width < WIDTH)
 		{
-			paddle.x += paddle.speed;
+			Paddle.x += Paddle.speed;
 		}
-		if(rectToBallCollide(paddle) && dy >0)
+		if(Collision.paddle(Paddle) && dy >0)
 		{
 			dy *= -1;
-			dx = 8 * ((x-(paddle.x+paddle.width/2))/paddle.width);
+			dx = 8 * ((Ball.x-(Paddle.x+Paddle.width/2))/Paddle.width);
 		}
 	}
 	else
