@@ -28,26 +28,26 @@ var paddle = new Object();
 
 
 var left = false, right = false;
-function init()
-{
-	Ball.x = 150;
-	Ball.y = 150;
-	ctx = $('#canvas')[0].getContext('2d');
-	WIDTH = $('#canvas').width();
-	HEIGHT = $('#canvas').height();
-	Paddle.width = 80;
-	Paddle.height = 15;	
-	Paddle.x = (WIDTH-Paddle.width)/2;
-	Paddle.y = HEIGHT-Paddle.height-10;
-	Paddle.speed = 5;
-	Paddle.resize= 1.0;
-	Paddle.power = false;
-	$('#lives').html(lives);
-	$('#level').html(currentLevel+1);
-	setlevelcolors();
-	initBricks();
-	return setInterval(draw, 10);
-}
+// function init()
+// {
+// 	Ball.x = 150;
+// 	Ball.y = 150;
+// 	ctx = $('#canvas')[0].getContext('2d');
+// 	WIDTH = $('#canvas').width();
+// 	HEIGHT = $('#canvas').height();
+// 	Paddle.width = 80;
+// 	Paddle.height = 15;	
+// 	Paddle.x = (WIDTH-Paddle.width)/2;
+// 	Paddle.y = HEIGHT-Paddle.height-10;
+// 	Paddle.speed = 5;
+// 	Paddle.resize= 1.0;
+// 	Paddle.power = false;
+// 	$('#lives').html(lives);
+// 	$('#level').html(currentLevel+1);
+// 	setlevelcolors();
+// 	initBricks();
+// 	return setInterval(draw, 10);
+// }
 /* * * * * * * * * * * * * * * * * * * 
  * SHAPES 
  * * * * * * * * * * * * * * * * * * */
@@ -150,8 +150,9 @@ function playerDie()
 	lives -= 1;
 	if(lives > -1)
 	{
-		Ball.x = 150;
-		Ball.y = 150 + levels[currentLevel].gutter;
+		console.log('here');
+		ball.x = 150;
+		ball.y = 150 + levels[currentLevel].gutter;
 		timerOffset = 10;
 		$('#lives').html(lives).css({
 			color: '#F00',
@@ -206,8 +207,8 @@ function nextLevel(){
 		else
 		{
 			$('#level').html(currentLevel+1);
-			Ball.x = 150;
-			Ball.y = 150 + levels[currentLevel].gutter;
+			ball.x = 150;
+			ball.y = 150 + levels[currentLevel].gutter;
 			dx = 2;
 			dy = 4;
 			Paddle.x = (WIDTH-Paddle.width)/2;
@@ -221,7 +222,7 @@ function drawBricks()
 	ctx.save();
 	for(var i = 0; i < bricks.length; i++)
 	{
-		rect(bricks[i].x, bricks[i].y, bricks[i].width, bricks[i].height, bricks[i].r, bricks[i].g, bricks[i].b);
+		rect(bricks[i].x, bricks[i].y, bricks[i].width, bricks[i].height, bricks[i].red, bricks[i].green, bricks[i].blue);
 	}
 	ctx.restore();
 }
@@ -251,9 +252,11 @@ function initBricks()
 				power = null;
 			}
 			bricks.push(
-				new brick(
+				new Brick(
 					(i*(BLOCKWIDTH+GUTTER))+7,
 					(j*(BLOCKHEIGHT+GUTTER))+levels[currentLevel].gutter, 
+					BLOCKWIDTH,
+					BLOCKHEIGHT, 
 					score,
 					r,
 					g,
@@ -273,7 +276,7 @@ function removeBrick()
 	if(y < closeBrick)
 		return;
 	for(var i = 0; i < bricks.length; i++){
-		if(Collision.brick(bricks[i]))
+		if(bricks[i].collide(ball))
 		{
 			addScore(bricks[i].score);
 			if(bricks[i].power)

@@ -3,38 +3,39 @@ var cheater = '';
 function draw()
 {
 	clear();
-	circle(Ball.x, Ball.y, 10);
-	rect(Paddle.x, Paddle.y, Paddle.width, Paddle.height);
+	circle(ball.x, ball.y, ball.width);
+	paddle.draw();
 	removeBrick();
 	drawBricks();
 	handlePowerups();
 	if(timerOffset == 0)
 	{
-		if(Ball.x + dx + 10 > WIDTH || Ball.x + dx - 10 < 0)
+		if(ball.x + dx + 10 > WIDTH || ball.x + dx - 10 < 0)
 			dx = -dx;
-		if(Ball.y + dy - 10 < 0)
+		if(ball.y + dy - 10 < 0)
 			dy = -dy;
-		if(Ball.y + dy + 10 > HEIGHT)
+		if(ball.y + dy + 10 > HEIGHT)
 		{
 			playerDie();
 		}
 		else
 		{
-			Ball.x += dx;
-			Ball.y += dy;		
+			ball.x += dx;
+			ball.y += dy;		
 		}
-		if(left && Paddle.x  > 0)
+		if(left && paddle.x  > 0)
 		{
-			Paddle.x -= Paddle.speed;
+			paddle.move('left');
 		}
-		else if(right && Paddle.x  + Paddle.width < WIDTH)
+		else if(right && paddle.x  + paddle.width < WIDTH)
 		{
-			Paddle.x += Paddle.speed;
+			// paddle.x += paddle.speed;
+			paddle.move('right');
 		}
-		if(Collision.paddle(Paddle) && dy >0)
+		if(paddle.collide(ball) && dy >0)
 		{
 			dy *= -1;
-			dx = 8 * ((Ball.x-(Paddle.x+Paddle.width/2))/Paddle.width);
+			dx = 4 * ((ball.x-(paddle.x+paddle.width/2))/paddle.width);
 		}
 	}
 	else

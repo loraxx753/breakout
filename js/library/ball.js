@@ -1,5 +1,6 @@
-window.Ball = function()
+Ball = function(x, y, width)
 {
+	var width;
 	var x;
 	var y;
 
@@ -12,6 +13,7 @@ window.Ball = function()
 	return {
 		x : x,
 		y : y,
+		width : width,
 		update : update,
 	}
-}();
+};

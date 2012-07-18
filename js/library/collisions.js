@@ -9,13 +9,6 @@ window.Collision = function()
 		return false;
 	}
 
-	var paddle = function()
-	{
-		if(Ball.x + 10 > Paddle.x && Ball.x - 10 < Paddle.x + Paddle.width &&
-		Ball.y + 10 > Paddle.y && Ball.y - 10 < Paddle.y + Paddle.height)
-			return true;
-		return false;
-	}
 	var power = function() {
 		if(Ball.x + 10 > Paddle.x && Ball.x - 10 < Paddle.x + Paddle.width &&
 		Ball.y + 10 > Paddle.y && Ball.y - 10 < Paddle.y + Paddle.height)
