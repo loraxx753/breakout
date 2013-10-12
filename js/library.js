@@ -153,6 +153,8 @@ function playerDie()
 		console.log('here');
 		ball.x = 150;
 		ball.y = 150 + levels[currentLevel].gutter;
+		dx = 2;
+		dy = 4;
 		timerOffset = 10;
 		$('#lives').html(lives).css({
 			color: '#F00',

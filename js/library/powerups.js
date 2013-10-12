@@ -38,7 +38,7 @@ function createPowerUp(power, x, y)
 }
 function handlePowerups()
 {
-	for(var i = 0; i < powerups.length; i++)
+	for(var i = powerups.length - 1; i > 0; i--)
 	{
 		if(Collision.power(powerups[i]))
 		{
